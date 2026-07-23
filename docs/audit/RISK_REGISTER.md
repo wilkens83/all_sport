@@ -1,0 +1,35 @@
+# Risk Register
+
+**Status:** Phase 0 · **Date:** 2026-07-23 · Reviewed by the skeptic lens.
+Likelihood × Impact are qualitative (Low/Med/High). Each risk has an owner role and
+a concrete mitigation. Risks are revisited at every phase gate.
+
+| ID | Risk | Likelihood | Impact | Mitigation | Owner role |
+|---|---|---|---|---|---|
+| **R-01** | **MLB Stats API / Baseball Savant commercial-use restriction.** Every payload carries a copyright notice restricting redistribution; free ≠ commercially licensed. Shipping a paid product on it may breach terms. | Med | High | Default to research/non-commercial posture; document clearly in README; obtain legal review before any commercial launch; abstract the provider so a licensed feed can replace it. | security-agent / data-research-agent |
+| **R-02** | **Sackmann historical data is CC BY-NC-SA 4.0 (non-commercial + ShareAlike).** Using it in a commercial product, or failing to attribute / ShareAlike derivatives, is a license violation. | High | High | Confine Sackmann to the RESEARCH/BACKTESTING plane; never in the live commercial path; attribute in-repo and in-UI; keep it physically separate from live data; source a commercial historical feed before any commercial launch. | data-research-agent / security-agent |
+| **R-03** | **No live tennis credentials.** Sportradar/SportsDataIO/API-Tennis all require keys absent here. Tennis LIVE cannot be built or verified. | High | High | Mark tennis-live phases `BLOCKED_EXTERNAL_CREDENTIAL`; ship inert adapters + honest "not configured" UI; never fabricate matches/props. Escalate credential acquisition to the user. | tennis-data-agent |
+| **R-04** | **Data leakage into models** (future info used for a past prediction). Silently destroys backtest validity and calibration. | Med | High | Explicit `asOf` on every query; automated leakage tests (§13); `getPlayerRatingBefore`-style temporal guards; skeptic review of every model path. | quantitative-model-agent / skeptic |
+| **R-05** | **Fabricated / invented numbers** (probabilities, edges, ratings, park factors, coefficients presented without lineage). Violates §38 and the whole project premise. | Med | High | "No number without lineage" rule; provenance stamps on projections; trace every hard-coded coefficient to a cited source or a fitted value or DELETE it; skeptic veto. | skeptic / quantitative-model-agent |
+| **R-06** | **Fixtures leaking into production.** Legacy has tennis fixtures; easy to accidentally serve them as real. | Med | High | Fixtures only under tests/dev, unmistakably labeled; provider registry excludes fixture provider from production unless `allowFixtures`; E2E asserts "not configured" states. | qa-agent / skeptic |
+| ~~R-07~~ | **RESOLVED — Tennis vendor identity.** `api-tennis.com` (Provider A: own infra, `APIkey` auth) and `tennis-api.com` (Provider B: RapidAPI, `X-RapidAPI-Key`/`X-RapidAPI-Host`) are confirmed **distinct** vendors. | — | — | Closed: documented as two separate providers in SOURCE_REGISTRY §5A/§5B and the decision matrix; two independent adapters, never combined. | tennis-data-agent |
+| **R-19** | **SportsDataIO free-trial data is scrambled-but-realistic.** If treated as production truth, it silently poisons model evaluation, historical ROI, player assessments, and recommendations with fake values that look plausible. | High (if unhandled) | High | Introduce `DataTruthClass` (`production_real`/`historical_real`/`trial_scrambled`/`fixture`/`simulated`) at the provider boundary from Phase 1; analytics/production layers must reject `trial_scrambled`; every provider response carries its truth class as metadata. | security-agent / data-research-agent |
+| **R-08** | **Undocumented MLB Stats API response drift.** Unversioned API; field shapes can change and silently break normalization. | Med | Med | Zod validation at the boundary; contract tests against saved real responses; alert on schema-version mismatch; retain raw payloads for replay. | mlb-data-agent / qa-agent |
+| **R-09** | **Provider rate limits / throttling** (esp. Savant scraping, freemium tennis 50/day). | Med | Med | TTL cache + persist; polite request pacing; rate-limit metrics + backoff; never aggressive-scrape. | data-research-agent / observability |
+| **R-10** | **Over-building infrastructure** before it earns its place (premature DB complexity, schedulers). | Med | Med | Phase gates; build vertical slices proven with real data before widening; idempotent scripts before schedulers. | architecture-agent |
+| **R-11** | **Identity collisions across tours/providers** (same name, different player; transliteration). | Med | High | Multi-evidence resolution (ID + DOB + nationality + tour + ranking history); `IDENTITY_UNRESOLVED` on ambiguity; never name-alone joins. | tennis-data-agent / mlb-data-agent |
+| **R-12** | **Uncalibrated probabilities presented as trustworthy.** A 60% that isn't 60% is dangerous. | Med | High | Mandatory calibration tables/plots by bucket before a market is "production-ready"; quality caps on recommendations; §21. | backtesting-agent |
+| **R-13** | **PrizePicks automated ingestion legality / stability.** Scraping protected pages or automating accounts is prohibited and brittle. | Med | High | Manual/CSV/PDF only initially; automation only after authorization + technical legitimacy verified; no account automation / CAPTCHA bypass. | security-agent |
+| **R-14** | **Secret leakage** (API keys in client bundle, logs, or commits). | Med | High | Keys server-side only; `.env` gitignored; `.env.example` documents names not values; secret-scanning in CI; structured logs redact secrets. | security-agent |
+| **R-15** | **CI absent / green-on-compile fallacy.** "TypeScript compiles" mistaken for "works". | Med | Med | CI gates (install/lint/typecheck/unit/integration/build); DoD forbids "route exists = done"; live smoke tests where creds allow. | qa-agent |
+| **R-16** | **Reproducibility loss** — a projection that can't be regenerated from pinned code+config+seed. | Med | High | Version + config-checksum + seed stamped on every projection; snapshot table; regeneration test. | quantitative-model-agent |
+| **R-17** | **Ephemeral environment / disk limits** in this remote sandbox; work lost if not committed/pushed. | Med | Med | Commit + push Phase deliverables promptly; keep clones shallow; clean build artifacts. | (process) |
+| **R-18** | **Scope sprawl across 19 phases** leading to shallow, unverified breadth. | High | Med | Execute phases sequentially; STOP-and-validate gates; skeptic veto on phase completion; "five trustworthy markets > fifty fake" (§41). | architecture-agent / skeptic |
+
+## Top-3 to resolve first
+
+1. **R-03 / credentials** — nothing tennis-live proceeds without a key. Escalate now.
+2. **R-01 / R-02 licensing** — decides whether this is a research tool or needs
+   commercial data deals; affects every "production" claim.
+3. **R-04 / R-05 leakage & invented numbers** — the integrity core; enforced by
+   tests + provenance + skeptic veto from Phase 1 onward.
