@@ -140,45 +140,79 @@ Coverage:                 ATP & WTA 250+ rankings (singles & doubles), player
 Freshness:                Live coverage; rankings updated as matches conclude.
 Historical availability:  UNKNOWN depth (not stated on coverage page).
 Known limitations:        Serve/return granularity and point-by-point NOT clearly
-                          advertised (UNKNOWN). Commercial. Trial-key limits apply.
+                          advertised (UNKNOWN). Commercial. *** FREE-TRIAL DATA CAN
+                          BE SCRAMBLED BUT REALISTIC *** — SportsDataIO explicitly
+                          states trial responses may contain scrambled (fake-but-
+                          plausible) values. This data MUST be classified
+                          `trial_scrambled` and NEVER used as production truth
+                          (no model eval, historical ROI, player assessment, or
+                          recommendation) while presented as real. See R-19 and the
+                          `DataTruthClass` design (Phase 1 core package).
 Last verified:            2026-07-23
 Verification method:      DOCS — no key in this environment (BLOCKED for live).
 ```
 
 **Verdict:** Strong on **odds/betting lines** (a genuine differentiator for
-edge analysis) but weaker/unclear on serve-return and PBP granularity.
+edge analysis) but weaker/unclear on serve-return and PBP granularity, and its
+**free-trial data is scrambled** and must be technically quarantined.
 **BLOCKED_EXTERNAL_CREDENTIAL**.
 
 ---
 
-## 5. API-Tennis / tennis-api.com (secondary)
+## 5. Secondary tennis vendors — TWO DISTINCT services (do not conflate)
+
+`api-tennis.com` and `tennis-api.com` are **separate vendors**, not aliases. They
+have different infrastructure, authentication, and endpoint structures and MUST be
+implemented as two independent adapters. The ambiguity flagged in Phase 0 is now
+resolved.
+
+### 5A. Provider A — `api-tennis.com`
 
 ```
-Provider:                 tennis-api.com / api-tennis.com (freemium)
+Provider:                 api-tennis.com (own API infrastructure)
+Sport:                    ATP / WTA / ITF / Challenger tennis
+Purpose:                  Tier-B backup / enrichment / cross-validation.
+Official documentation:   https://api-tennis.com (own docs)
+Endpoint (base):          api-tennis.com — own endpoint structure
+Authentication:           `APIkey` parameter (own auth scheme; server-side only).
+Coverage (verified traits): fixtures, livescore, H2H, standings, players, odds,
+                          live odds.
+Freshness:                Live (livescore + live odds).
+Historical availability:  UNKNOWN exact depth.
+Known limitations:        Distinct vendor from tennis-api.com. Confirm exact
+                          coverage/limits against a live key before wiring.
+Env var:                  API_TENNIS_API_KEY
+Last verified:            2026-07-23
+Verification method:      DOCS + user-confirmed vendor characteristics.
+```
+
+### 5B. Provider B — `tennis-api.com` (via RapidAPI)
+
+```
+Provider:                 tennis-api.com (distributed through RapidAPI; matchstat)
 Sport:                    ATP / WTA / ITF / Challenger tennis
 Purpose:                  Tier-B backup / enrichment / cross-validation.
 Official documentation:   https://tennis-api.com/api-coverage/ ; docs.tennis-api.com
-Endpoint (base, docs):    REST JSON; api.api-tennis.com/tennis (key as query param
-                          for api-tennis.com variant)
-Authentication:           API key (query param / header depending on variant).
+Endpoint (base):          RapidAPI-hosted; separate endpoint structure from 5A.
+Authentication:           RapidAPI headers: `X-RapidAPI-Key`, `X-RapidAPI-Host`
+                          (server-side only).
 Coverage:                 ATP, WTA, ITF, Challenger, Grand Slams; live scores,
                           fixtures, profiles, rankings, H2H, draws, odds,
                           point-by-point (WebSocket), historical results, serve/
                           return & surface stats.
 Freshness:                Live (REST + WebSocket).
 Historical availability:  "Varies by plan and endpoint" (UNKNOWN exact depth).
-Known limitations:        Freemium; free tier 50 req/day, 4 req/s. Paid: Pro
-                          $29/mo (150k/mo), Ultra $59/mo, Mega $99/mo; overage
-                          $0.003/req. NOTE: "tennis-api.com" (matchstat) and
-                          "api-tennis.com" appear to be DISTINCT vendors sharing
-                          similar names — must confirm which one before wiring.
+Known limitations:        Freemium; free 50 req/day, 4 req/s. Paid: Pro $29/mo
+                          (150k/mo), Ultra $59/mo, Mega $99/mo; overage $0.003/req.
+Env var:                  TENNIS_API_RAPIDAPI_KEY (+ RapidAPI host)
 Last verified:            2026-07-23
-Verification method:      DOCS (tennis-api.com coverage page fetched live).
+Verification method:      DOCS (coverage page fetched live) + user-confirmed traits.
 ```
 
-**Verdict:** Cheapest path to *some* live tennis; good backup / cross-check.
-Not the automatic primary. **BLOCKED_EXTERNAL_CREDENTIAL**. Vendor-identity
-ambiguity (R-07) must be resolved before integration.
+**Verdict:** Two independent cheap-ish paths to *some* live tennis; useful backups /
+cross-checks. Neither is the automatic primary. Both **BLOCKED_EXTERNAL_CREDENTIAL**.
+They will be built as **two separate adapters** with different auth — never a single
+combined "api-tennis" abstraction.
 
 ---
 

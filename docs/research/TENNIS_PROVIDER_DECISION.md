@@ -50,9 +50,17 @@ The build spec's tennis engine needs, in priority order:
 | Role | Provider | Rationale |
 |---|---|---|
 | **Primary LIVE (production candidate)** | **Sportradar Tennis v3** | Best coverage of serve/return + surface + stable IDs + PBP tiering + official ATP partnership; enterprise SLA. |
-| **Odds / market cross-source** | **SportsDataIO Tennis** | Explicit odds w/ open+close timestamps — needed for honest historical CLV/EV and edge. |
-| **Secondary / cheap backup / cross-validation** | **API-Tennis (tennis-api.com)** | Low cost, WebSocket PBP, useful to cross-check the primary and as failover. |
+| **Odds / market cross-source** | **SportsDataIO Tennis** | Explicit odds w/ open+close timestamps — needed for honest historical CLV/EV and edge. NOTE: free-trial data is **scrambled** → classify `trial_scrambled`, never production truth. |
+| **Secondary backup / cross-validation #1** | **api-tennis.com** (Provider A) | Own infra; `APIkey` auth; fixtures/livescore/H2H/standings/players/odds/live-odds. |
+| **Secondary backup / cross-validation #2** | **tennis-api.com** (Provider B, via RapidAPI) | Distinct vendor; `X-RapidAPI-Key`/`X-RapidAPI-Host`; WebSocket PBP, serve/return, historical. |
 | **Historical / backtesting corpus** | **Jeff Sackmann (CC BY-NC-SA)** | Deep multi-decade ATP/WTA history — RESEARCH/NON-COMMERCIAL plane only. |
+
+> **Vendor identity resolved (was R-07).** `api-tennis.com` (Provider A) and
+> `tennis-api.com` (Provider B) are **separate services** — different
+> infrastructure, different authentication (`APIkey` vs `X-RapidAPI-Key` +
+> `X-RapidAPI-Host`), different endpoint structures. They will be implemented as
+> **two independent adapters**. There will be no single combined "api-tennis"
+> abstraction that conflates them.
 
 ## Hard constraints on this decision
 
@@ -61,7 +69,10 @@ The build spec's tennis engine needs, in priority order:
   Until then the app shows `Live Tennis provider not configured` — never fabricated
   matches/props.
 - **Trial data is not production truth.** Any free/trial key's limitations
-  (scrambled or partial data) must be displayed prominently and never treated as real.
+  (scrambled or partial data) must be displayed prominently and never treated as
+  real. SportsDataIO trial data specifically is scrambled-but-realistic and MUST be
+  tagged `trial_scrambled` at the provider boundary so the analytics layer rejects
+  it (see the `DataTruthClass` type introduced in `packages/core`, Phase 1).
 - **Historical ≠ Live.** Sackmann (NC) powers backtesting/priors only; it must never
   masquerade as today's live board.
 - **Vendor-identity check (R-07).** Confirm whether the intended Tier-B vendor is
@@ -73,6 +84,8 @@ The build spec's tennis engine needs, in priority order:
 - [ ] Obtain Sportradar Tennis v3 trial → verify Coverage Matrix for target
       competitions (which seasons expose statistics + PBP).
 - [ ] Obtain SportsDataIO tennis key → verify serve/return granularity (currently UNKNOWN).
-- [ ] Confirm API-Tennis vendor identity + auth mechanism.
+- [x] Confirm secondary-vendor identities + auth mechanisms — **RESOLVED**:
+      api-tennis.com (Provider A, `APIkey`) and tennis-api.com (Provider B,
+      RapidAPI `X-RapidAPI-Key`/`X-RapidAPI-Host`) are distinct; two adapters.
 - [ ] Get sales-quoted pricing/SLA for Sportradar and SportsDataIO (UNKNOWN).
 - [ ] Legal review of MLB Stats API / Savant / Sackmann commercial-use posture.
