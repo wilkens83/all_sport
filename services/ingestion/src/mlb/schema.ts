@@ -22,8 +22,14 @@ export const mlbGameSchema = z.object({
     codedGameState: z.string().nullish(),
   }),
   teams: z.object({
-    away: z.object({ team: mlbTeamRefSchema }),
-    home: z.object({ team: mlbTeamRefSchema }),
+    away: z.object({
+      team: mlbTeamRefSchema,
+      probablePitcher: z.object({ id: z.number() }).nullish(),
+    }),
+    home: z.object({
+      team: mlbTeamRefSchema,
+      probablePitcher: z.object({ id: z.number() }).nullish(),
+    }),
   }),
   venue: z.object({ id: z.number(), name: z.string() }).nullish(),
 });

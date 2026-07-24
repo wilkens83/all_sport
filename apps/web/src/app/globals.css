@@ -250,3 +250,134 @@ a {
 .detail-row .k {
   color: var(--muted);
 }
+
+/* ---- Slice 2: game context + player page ---- */
+.section {
+  margin-top: 1.75rem;
+}
+.section h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+.pitcher-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+.mini-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+}
+.mini-card .lbl {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.mini-card a {
+  font-size: 1rem;
+  font-weight: 600;
+}
+.mini-card .none {
+  color: var(--off);
+  font-size: 0.92rem;
+}
+.roster-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.roster-col h3 {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+.roster-list {
+  display: flex;
+  flex-direction: column;
+}
+.roster-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0.2rem;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--fg);
+  font-size: 0.9rem;
+}
+.roster-item:hover {
+  background: #171c25;
+}
+.roster-item .pos {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.player-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  align-items: baseline;
+  margin-bottom: 0.25rem;
+}
+.player-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+.player-meta b {
+  color: var(--fg);
+  font-weight: 600;
+}
+.role-pill {
+  font-size: 0.7rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+table.logs {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+table.logs th,
+table.logs td {
+  padding: 0.4rem 0.6rem;
+  text-align: right;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+table.logs th:first-child,
+table.logs td:first-child,
+table.logs th:nth-child(2),
+table.logs td:nth-child(2) {
+  text-align: left;
+}
+table.logs thead th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  background: #0e1116;
+}
+table.logs tbody tr:hover {
+  background: #171c25;
+}
