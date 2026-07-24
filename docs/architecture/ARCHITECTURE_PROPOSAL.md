@@ -65,17 +65,17 @@ imports a sibling sport's internals**; pure packages (`core/math`, `odds`,
 
 ## 3. Technology choices (provisional — see ADR-0002)
 
-| Concern | Choice | Why |
-|---|---|---|
-| Language | TypeScript (strict) | Continuity with legacy core; one language across app+services. |
-| App framework | Next.js (App Router) | Reuse legacy design system + SSR; single multi-sport app. |
-| Database | **PostgreSQL** | Mandated (§5); relational fit for entities + provenance + time queries. |
-| Migrations | SQL-first migrations in `database/migrations` | Explicit, reviewable, reproducible. |
-| DB access | Typed query layer (e.g. Kysely/Drizzle — decide in Phase 1) | Type-safe SQL without hiding it. |
-| Validation | Zod at every provider boundary | Ported pattern; reject malformed, degrade gracefully. |
-| Cache | TTL cache in front of providers (ported), Postgres as system of record | Freshness without hammering providers. |
-| Tests | Unit + contract + integration + model + leakage + API + E2E (Playwright) | Spec §29 pyramid. |
-| CI | GitHub Actions (install/format/lint/typecheck/unit/integration/build) | Spec §31 gates. |
+| Concern       | Choice                                                                   | Why                                                                     |
+| ------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Language      | TypeScript (strict)                                                      | Continuity with legacy core; one language across app+services.          |
+| App framework | Next.js (App Router)                                                     | Reuse legacy design system + SSR; single multi-sport app.               |
+| Database      | **PostgreSQL**                                                           | Mandated (§5); relational fit for entities + provenance + time queries. |
+| Migrations    | SQL-first migrations in `database/migrations`                            | Explicit, reviewable, reproducible.                                     |
+| DB access     | Typed query layer (e.g. Kysely/Drizzle — decide in Phase 1)              | Type-safe SQL without hiding it.                                        |
+| Validation    | Zod at every provider boundary                                           | Ported pattern; reject malformed, degrade gracefully.                   |
+| Cache         | TTL cache in front of providers (ported), Postgres as system of record   | Freshness without hammering providers.                                  |
+| Tests         | Unit + contract + integration + model + leakage + API + E2E (Playwright) | Spec §29 pyramid.                                                       |
+| CI            | GitHub Actions (install/format/lint/typecheck/unit/integration/build)    | Spec §31 gates.                                                         |
 
 > Managed-Postgres options (e.g. Supabase) are available in this environment and may
 > back the dev database; the schema stays portable to any Postgres. Decided in Phase 1.

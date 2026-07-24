@@ -59,4 +59,4 @@ See `docs/audit/LEGACY_SYSTEM_AUDIT.md` for the KEEP/REWRITE/RESEARCH/DELETE map
 
 ## Commands
 
-*(Populated in Phase 1 once the monorepo skeleton + tooling land. Nothing to run yet.)*
+_(Populated in Phase 1 once the monorepo skeleton + tooling land. Nothing to run yet.)_

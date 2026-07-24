@@ -1,0 +1,34 @@
+# Local development infrastructure for the All-Sport Intelligence Platform.
+# PostgreSQL is the system of record. No production secrets are hard-coded here —
+# credentials are dev-only defaults, overridable via the shell environment.
+#
+#   docker compose up -d postgres
+#   pnpm db:migrate
+#   pnpm db:verify
+#
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: all_sport_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-allsport}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-allsport_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-all_sport}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - all_sport_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-allsport} -d ${POSTGRES_DB:-all_sport}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  all_sport_pgdata:
+    name: all_sport_pgdata

@@ -1,0 +1,20 @@
+{
+  "name": "@all-sport/ingestion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit",
+    "migrate": "tsx src/cli.ts migrate",
+    "verify": "tsx src/cli.ts verify"
+  },
+  "dependencies": {
+    "@all-sport/core": "workspace:*",
+    "@all-sport/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "tsx": "4.23.1"
+  }
+}
