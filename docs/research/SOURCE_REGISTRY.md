@@ -6,6 +6,7 @@ plus `Verification method` distinguish **live** checks (a request was actually
 made from this environment) from **documentation-only** review.
 
 > **Verification legend**
+>
 > - `LIVE` — a real HTTP request was made from this environment and the response inspected.
 > - `DOCS` — verified against vendor documentation / public README only; no credentialed call was possible.
 > - `BLOCKED` — requires credentials that are not present in this environment.
@@ -41,12 +42,12 @@ Verification method:      LIVE — see evidence below.
 
 **Live evidence captured 2026-07-23:**
 
-| Endpoint | Request | Result |
-|---|---|---|
-| Teams | `GET /api/v1/teams?sportId=1&season=2025` | HTTP 200, real 2025 teams (e.g. Athletics id=133, venue Sutter Health Park) |
-| Schedule (today) | `GET /api/v1/schedule?sportId=1&date=2026-07-23` | HTTP 200, `totalGames=5`, real matchups w/ live statuses ("Final", "In Progress") |
-| Schedule (historical) | `GET /api/v1/schedule?sportId=1&date=2025-06-15` | HTTP 200, `totalGames=15` |
-| Person | `GET /api/v1/people/592450` | HTTP 200, "Aaron Judge", RF, bats R |
+| Endpoint              | Request                                          | Result                                                                            |
+| --------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------- |
+| Teams                 | `GET /api/v1/teams?sportId=1&season=2025`        | HTTP 200, real 2025 teams (e.g. Athletics id=133, venue Sutter Health Park)       |
+| Schedule (today)      | `GET /api/v1/schedule?sportId=1&date=2026-07-23` | HTTP 200, `totalGames=5`, real matchups w/ live statuses ("Final", "In Progress") |
+| Schedule (historical) | `GET /api/v1/schedule?sportId=1&date=2025-06-15` | HTTP 200, `totalGames=15`                                                         |
+| Person                | `GET /api/v1/people/592450`                      | HTTP 200, "Aaron Judge", RF, bats R                                               |
 
 **Verdict:** Production-viable as the MLB backbone. No credential blocker. The
 only open risk is the **commercial-use / redistribution** clause — flagged in the
@@ -80,10 +81,10 @@ Verification method:      LIVE (reachability) — see evidence below.
 
 **Live evidence captured 2026-07-23:**
 
-| Endpoint | Result |
-|---|---|
+| Endpoint                                                                       | Result   |
+| ------------------------------------------------------------------------------ | -------- |
 | `GET /statcast_search/csv?...&game_date_gt=2025-06-01&game_date_lt=2025-06-01` | HTTP 200 |
-| `GET /leaderboard/expected_statistics?type=batter&year=2025&min=q&csv=true` | HTTP 200 |
+| `GET /leaderboard/expected_statistics?type=batter&year=2025&min=q&csv=true`    | HTTP 200 |
 
 **Verdict:** Viable for enrichment. Access pattern must be polite (cache +
 persist raw payloads). No credential blocker.
@@ -209,7 +210,7 @@ Last verified:            2026-07-23
 Verification method:      DOCS (coverage page fetched live) + user-confirmed traits.
 ```
 
-**Verdict:** Two independent cheap-ish paths to *some* live tennis; useful backups /
+**Verdict:** Two independent cheap-ish paths to _some_ live tennis; useful backups /
 cross-checks. Neither is the automatic primary. Both **BLOCKED_EXTERNAL_CREDENTIAL**.
 They will be built as **two separate adapters** with different auth — never a single
 combined "api-tennis" abstraction.
@@ -248,8 +249,8 @@ Verification method:      DOCS (license confirmed via repo READMEs / CC page).
 
 **Verdict:** Excellent for the **backtesting/research** plane. **NOT** a lawful
 foundation for a commercial live product. Drives the core provider decision:
-*historical (Sackmann, NC) and live (licensed vendor) are separate planes and
-must never be silently merged.* See R-01, R-02.
+_historical (Sackmann, NC) and live (licensed vendor) are separate planes and
+must never be silently merged._ See R-01, R-02.
 
 ---
 

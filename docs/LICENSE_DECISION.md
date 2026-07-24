@@ -11,7 +11,7 @@ posture, which is itself constrained by data-source licensing:
    a copyright notice restricting redistribution/commercial use. A commercial product
    may need a separate arrangement (Risk R-01).
 2. **Jeff Sackmann / Tennis Abstract historical data** — **CC BY-NC-SA 4.0**:
-   *non-commercial*, *attribution*, and *ShareAlike*. If this data (or a derivative)
+   _non-commercial_, _attribution_, and _ShareAlike_. If this data (or a derivative)
    is distributed, ShareAlike may impose CC BY-NC-SA on the derivative, and
    commercial use is disallowed outright (Risk R-02).
 

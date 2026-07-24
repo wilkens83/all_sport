@@ -1,0 +1,8 @@
+packages:
+  - "packages/*"
+  - "services/*"
+  - "apps/*"
+
+# Pin built-deps that require approval under pnpm 10 (none needed yet).
+onlyBuiltDependencies:
+  - esbuild

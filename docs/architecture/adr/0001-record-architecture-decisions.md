@@ -8,7 +8,7 @@
 This is a greenfield rebuild whose central promise is that its **claims survive
 verification**. Decisions about providers, database, and modeling carry licensing,
 correctness, and reproducibility consequences. We need a durable, reviewable trail
-of *why* each significant choice was made.
+of _why_ each significant choice was made.
 
 ## Decision
 

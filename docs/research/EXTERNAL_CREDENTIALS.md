@@ -6,20 +6,21 @@ This is the definitive blocker list for the project (spec §44.16). Nothing on t
 response is confirmed.
 
 ## Status legend
+
 - `AVAILABLE` — works in this environment today (keyless / already reachable).
 - `BLOCKED_EXTERNAL_CREDENTIAL` — requires a key/license not present here.
 - `AUTHORIZATION_REQUIRED` — needs legal/ToS authorization, not just a key.
 
-| Capability | Env var / requirement | Status | Notes |
-|---|---|---|---|
-| MLB schedules/teams/players/games/stats | none (public) | **AVAILABLE** | Live-verified 2026-07-23. Commercial-use caveat (R-01). |
-| MLB Statcast enrichment | none (public) | **AVAILABLE** | Savant CSV endpoints reachable (200). Be polite (R-09). |
-| Tennis LIVE — Sportradar v3 | `SPORTRADAR_TENNIS_API_KEY` | **BLOCKED_EXTERNAL_CREDENTIAL** | Primary live candidate. Adapter inert w/o key. |
-| Tennis LIVE — SportsDataIO | `SPORTSDATAIO_TENNIS_API_KEY` | **BLOCKED_EXTERNAL_CREDENTIAL** | Odds/market source. `Ocp-Apim-Subscription-Key`. |
-| Tennis LIVE — API-Tennis | `API_TENNIS_API_KEY` | **BLOCKED_EXTERNAL_CREDENTIAL** | Backup. Confirm vendor identity first (R-07). |
-| Tennis HISTORICAL — Sackmann | none (public repo) | **AUTHORIZATION_REQUIRED** | Code works keyless, but CC BY-NC-SA = non-commercial only (R-02). Research plane only. |
-| PrizePicks market lines | none for manual/CSV/PDF | **AUTHORIZATION_REQUIRED** for automation | Manual/CSV/PDF now; automated ingestion needs verified authorization (R-13). |
-| Database (dev) | Postgres connection (`DATABASE_URL`) | provisioned in Phase 1 | Managed Postgres (e.g. Supabase) available in this environment. |
+| Capability                              | Env var / requirement                | Status                                    | Notes                                                                                  |
+| --------------------------------------- | ------------------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| MLB schedules/teams/players/games/stats | none (public)                        | **AVAILABLE**                             | Live-verified 2026-07-23. Commercial-use caveat (R-01).                                |
+| MLB Statcast enrichment                 | none (public)                        | **AVAILABLE**                             | Savant CSV endpoints reachable (200). Be polite (R-09).                                |
+| Tennis LIVE — Sportradar v3             | `SPORTRADAR_TENNIS_API_KEY`          | **BLOCKED_EXTERNAL_CREDENTIAL**           | Primary live candidate. Adapter inert w/o key.                                         |
+| Tennis LIVE — SportsDataIO              | `SPORTSDATAIO_TENNIS_API_KEY`        | **BLOCKED_EXTERNAL_CREDENTIAL**           | Odds/market source. `Ocp-Apim-Subscription-Key`.                                       |
+| Tennis LIVE — API-Tennis                | `API_TENNIS_API_KEY`                 | **BLOCKED_EXTERNAL_CREDENTIAL**           | Backup. Confirm vendor identity first (R-07).                                          |
+| Tennis HISTORICAL — Sackmann            | none (public repo)                   | **AUTHORIZATION_REQUIRED**                | Code works keyless, but CC BY-NC-SA = non-commercial only (R-02). Research plane only. |
+| PrizePicks market lines                 | none for manual/CSV/PDF              | **AUTHORIZATION_REQUIRED** for automation | Manual/CSV/PDF now; automated ingestion needs verified authorization (R-13).           |
+| Database (dev)                          | Postgres connection (`DATABASE_URL`) | provisioned in Phase 1                    | Managed Postgres (e.g. Supabase) available in this environment.                        |
 
 ## What to request from the user (escalation)
 
