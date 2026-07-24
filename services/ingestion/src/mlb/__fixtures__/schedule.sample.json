@@ -1,0 +1,72 @@
+{
+  "totalGames": 2,
+  "dates": [
+    {
+      "date": "2026-07-24",
+      "games": [
+        {
+          "gamePk": 823759,
+          "officialDate": "2026-07-24",
+          "gameDate": "2026-07-24T20:10:00Z",
+          "season": "2026",
+          "status": {
+            "abstractGameState": "Preview",
+            "detailedState": "Scheduled",
+            "codedGameState": "S"
+          },
+          "teams": {
+            "away": {
+              "team": {
+                "id": 115,
+                "name": "Colorado Rockies",
+                "abbreviation": "COL"
+              }
+            },
+            "home": {
+              "team": {
+                "id": 158,
+                "name": "Milwaukee Brewers",
+                "abbreviation": "MIL"
+              }
+            }
+          },
+          "venue": {
+            "id": 32,
+            "name": "American Family Field"
+          }
+        },
+        {
+          "gamePk": 824248,
+          "officialDate": "2026-07-24",
+          "gameDate": "2026-07-24T22:40:00Z",
+          "season": "2026",
+          "status": {
+            "abstractGameState": "Preview",
+            "detailedState": "Scheduled",
+            "codedGameState": "S"
+          },
+          "teams": {
+            "away": {
+              "team": {
+                "id": 118,
+                "name": "Kansas City Royals",
+                "abbreviation": "KC"
+              }
+            },
+            "home": {
+              "team": {
+                "id": 116,
+                "name": "Detroit Tigers",
+                "abbreviation": "DET"
+              }
+            }
+          },
+          "venue": {
+            "id": 2394,
+            "name": "Comerica Park"
+          }
+        }
+      ]
+    }
+  ]
+}
