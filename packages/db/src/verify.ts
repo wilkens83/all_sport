@@ -8,7 +8,7 @@ export const EXPECTED_TABLES = [
   "ingestion_runs",
   "provider_requests",
   "data_quality_events",
-  "source_provenance",
+  "provider_observations",
 ] as const;
 
 export interface VerifyResult {

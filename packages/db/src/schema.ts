@@ -18,7 +18,8 @@ export interface ProvidersTable {
   slug: string;
   name: string;
   sport: string;
-  truth_class: string;
+  /** Declared default only; authoritative truth class is per run / per observation. */
+  default_truth_class: string;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
@@ -27,10 +28,16 @@ export interface IngestionRunsTable {
   id: Generated<string>;
   provider_id: string;
   sport: string;
+  adapter_version: Generated<string>;
+  access_mode: string | null;
+  truth_class: string;
   status: Generated<string>;
   started_at: Generated<Date>;
   finished_at: Date | null;
-  records_ingested: Generated<number>;
+  request_count: Generated<number>;
+  records_observed: Generated<number>;
+  records_normalized: Generated<number>;
+  records_rejected: Generated<number>;
   error: string | null;
 }
 
@@ -39,7 +46,10 @@ export interface ProviderRequestsTable {
   provider_id: string;
   ingestion_run_id: string | null;
   method: string;
-  url: string;
+  /** Secret-safe request metadata — no raw URL is ever stored. */
+  host: string;
+  path: string;
+  sanitized_query: string | null;
   status_code: number | null;
   latency_ms: number | null;
   truth_class: string;
@@ -59,17 +69,19 @@ export interface DataQualityEventsTable {
   occurred_at: Generated<Date>;
 }
 
-export interface SourceProvenanceTable {
+/** Append-only temporal provenance — one row per observation of an upstream record. */
+export interface ProviderObservationsTable {
   id: Generated<string>;
   provider_id: string;
   ingestion_run_id: string;
   entity_type: string;
-  entity_id: string;
   provider_record_id: string;
+  entity_id: string | null;
   fetched_at: Date;
   source_event_ts: Date | null;
-  parser_version: string;
+  /** SHA-256 hex of the raw response body bytes (uncompressed, headers excluded). */
   raw_response_hash: string;
+  parser_version: string;
   normalized_schema_version: string;
   truth_class: string;
   created_at: Generated<Date>;
@@ -86,6 +98,6 @@ export interface Database {
   ingestion_runs: IngestionRunsTable;
   provider_requests: ProviderRequestsTable;
   data_quality_events: DataQualityEventsTable;
-  source_provenance: SourceProvenanceTable;
+  provider_observations: ProviderObservationsTable;
   schema_migrations: SchemaMigrationsTable;
 }

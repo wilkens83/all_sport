@@ -35,3 +35,41 @@ narrative. Each claim below was independently exercised.
 **Verdict:** Phase 1 infrastructure is verified against real infrastructure. The one
 open item (D) is an environment/permissions limitation, not a code defect, and is
 surfaced honestly rather than papered over.
+
+---
+
+## Phase 1 hardening pass (2026-07-24)
+
+An independent architecture review found the initial skeptic pass never attacked the
+temporal-provenance and secret-handling properties. These attacks were added and run.
+
+| #   | Attack                                                                                     | How it was tested                                                                                                                                                                                                                              | Result                                                                                                                                                                        |
+| --- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 11  | **Provider URL secret leakage** — can a key in a request URL reach the DB?                 | Unit: `sanitizeRequestUrl` on `?APIkey=SUPER_SECRET_123&…`, plus 8 sensitive spellings, URL-encoded + mixed-case keys. Integration E: build a `provider_requests` row from `?api_key=ULTRA_SECRET`, insert, re-select, serialize every column. | **HELD** — secret absent from the sanitized parts and from the persisted row; non-sensitive params (`sport=tennis`, `event=42`) preserved. Schema has no `url` column at all. |
+| 12  | **Changed upstream record** — does a status change overwrite history?                      | Integration B: `game` Scheduled (hash1) then Final (hash2) via `recordObservation`.                                                                                                                                                            | **HELD** — two observations; distinct ids; count = 2.                                                                                                                         |
+| 13  | **Historical snapshot preservation / idempotency** — does a re-fetch duplicate or clobber? | Integration A: identical payload twice.                                                                                                                                                                                                        | **HELD** — first `inserted:true`, second `inserted:false` (same id); count = 1.                                                                                               |
+| 14  | **asOf observation selection** — can a future observation leak into a past query?          | Integration C: observations at 10:00/12:00/15:00; query `asOf=13:00` and `asOf=09:00`.                                                                                                                                                         | **HELD** — 13:00 returns the 12:00 row (never 15:00); 09:00 returns nothing.                                                                                                  |
+| 15  | **Parser-version replay** — is the same payload under a new parser distinguishable?        | Integration D: same hash, `parser v1` then `v2`.                                                                                                                                                                                               | **HELD** — two distinguishable observations; count = 2.                                                                                                                       |
+| 16  | **Provider truth-class variability** — is trial vs production preserved for one vendor?    | Integration F: same provider/record/payload, `trial_scrambled` vs `production_real`.                                                                                                                                                           | **HELD** — two observations; distinction preserved. `providers.truth_class` removed → `default_truth_class`; authoritative class is per-run/per-observation.                  |
+
+**Findings & actions (hardening):**
+
+- **Finding E (fixed):** `provider_requests.url` could persist a key. Replaced with
+  `host`/`path`/`sanitized_query` + a mandatory redactor (`sanitizeRequestUrl`); no
+  raw URL or headers are stored.
+- **Finding F (fixed):** provenance uniqueness `(provider, entity_type,
+provider_record_id)` erased temporal history. Replaced with an append-only
+  `provider_observations` table whose idempotency key adds the payload hash +
+  processing versions + truth class (ADR-0004).
+- **Finding G (fixed):** `raw_response_hash` was undefined. Now SHA-256 hex of raw
+  body bytes via `node:crypto` (ADR-0004 §4).
+- **Finding H (fixed):** `providers.truth_class` implied one mode per vendor. Now
+  `default_truth_class` (declared only); authoritative class per run/observation.
+- **Known limitation (documented):** a secret embedded in a URL **path** segment is
+  not auto-redacted; none of the selected providers do this (query/header auth only).
+  A path redactor is required before wiring any provider that embeds keys in the path.
+
+**Hardening verdict:** all six new attacks were attempted and failed to falsify the
+properties. Migration-from-zero re-proven (0 → 7 tables). Full gate suite green
+locally (51 tests). The default-branch item (#10) remains the only open, external
+blocker.

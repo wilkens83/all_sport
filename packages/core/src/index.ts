@@ -5,3 +5,4 @@ export * from "./truth-class";
 export * from "./time";
 export * from "./result";
 export * from "./version";
+export * from "./redact";

@@ -11,26 +11,50 @@ export const ingestionRunStatusSchema = z.enum([
 ]);
 export type IngestionRunStatus = z.infer<typeof ingestionRunStatusSchema>;
 
-/** A single execution of an ingestion job. Mirrors the `ingestion_runs` table. */
+export const accessModeSchema = z.enum([
+  "trial",
+  "production",
+  "historical",
+  "fixture",
+  "none",
+]);
+export type AccessMode = z.infer<typeof accessModeSchema>;
+
+/**
+ * A single execution of an ingestion job — a snapshot of the CONTEXT it ran under
+ * (never credentials). Mirrors the `ingestion_runs` table.
+ */
 export const ingestionRunSchema = z.object({
   id: z.uuid(),
   providerId: z.uuid(),
   sport: sportOrMulti,
+  adapterVersion: z.string().min(1),
+  accessMode: accessModeSchema.nullable(),
+  truthClass: z.enum(DATA_TRUTH_CLASSES),
   status: ingestionRunStatusSchema,
   startedAt: z.date(),
   finishedAt: z.date().nullable(),
-  recordsIngested: z.number().int().nonnegative(),
+  requestCount: z.number().int().nonnegative(),
+  recordsObserved: z.number().int().nonnegative(),
+  recordsNormalized: z.number().int().nonnegative(),
+  recordsRejected: z.number().int().nonnegative(),
   error: z.string().nullable(),
 });
 export type IngestionRun = z.infer<typeof ingestionRunSchema>;
 
-/** A single outbound request to a provider. Mirrors the `provider_requests` table. */
+/**
+ * A single outbound request to a provider. SECRET-SAFE: no raw URL — only
+ * host/path/sanitizedQuery (sensitive query values already redacted). Mirrors the
+ * `provider_requests` table.
+ */
 export const providerRequestSchema = z.object({
   id: z.uuid(),
   providerId: z.uuid(),
   ingestionRunId: z.uuid().nullable(),
   method: z.string().min(1),
-  url: z.string().min(1),
+  host: z.string().min(1),
+  path: z.string().min(1),
+  sanitizedQuery: z.string().nullable(),
   statusCode: z.number().int().nullable(),
   latencyMs: z.number().int().nonnegative().nullable(),
   truthClass: z.enum(DATA_TRUTH_CLASSES),
@@ -57,18 +81,23 @@ export const dataQualityEventSchema = z.object({
 export type DataQualityEvent = z.infer<typeof dataQualityEventSchema>;
 
 /**
- * Provenance metadata attached to every important normalized record. Mirrors the
- * `source_provenance` table. A record without provenance is not acceptable.
+ * One APPEND-ONLY observation of an upstream record at a point in time. Mirrors
+ * the `provider_observations` table. `rawResponseHash` is the SHA-256 hex of the
+ * raw response body bytes. A record without provenance is not acceptable, and an
+ * UPDATE that replaces an old observation is forbidden — history is preserved.
  */
-export const provenanceSchema = z.object({
-  provider: z.string().min(1),
+export const providerObservationSchema = z.object({
+  id: z.uuid(),
+  providerId: z.uuid(),
+  ingestionRunId: z.uuid(),
+  entityType: z.string().min(1),
   providerRecordId: z.string().min(1),
+  entityId: z.uuid().nullable(),
   fetchedAt: z.date(),
   sourceEventTs: z.date().nullable(),
-  ingestionRunId: z.uuid(),
-  parserVersion: z.string().min(1),
   rawResponseHash: z.string().min(1),
+  parserVersion: z.string().min(1),
   normalizedSchemaVersion: z.string().min(1),
   truthClass: z.enum(DATA_TRUTH_CLASSES),
 });
-export type Provenance = z.infer<typeof provenanceSchema>;
+export type ProviderObservation = z.infer<typeof providerObservationSchema>;

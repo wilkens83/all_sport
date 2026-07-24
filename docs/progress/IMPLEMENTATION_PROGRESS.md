@@ -48,6 +48,20 @@ data + tests + skeptic review (spec §32, §36).
 
 ## Change log
 
+- **2026-07-24 — Phase 1 hardening/VERIFIED.** Fixed six architecture-review defects
+  in migration 0001 before any sport tables depend on it: (1) `provider_requests` no
+  longer stores raw URLs — split to `host`/`path`/`sanitized_query` with a mandatory
+  secret redactor (`packages/core/sanitizeRequestUrl`); (2) provenance is now the
+  append-only `provider_observations` with an idempotency key that preserves temporal
+  history (payload hash + parser/schema versions + truth class), plus
+  `getObservationAsOf` for no-future-leakage reconstruction; (3) `providers.truth_class`
+  → `default_truth_class` (authoritative class per run/observation); (4)
+  `ingestion_runs` gains a context snapshot (adapter_version, access_mode, truth_class,
+  counters); (5) `raw_response_hash` defined as SHA-256 of raw body bytes (`node:crypto`);
+  (6) observation→normalizer→canonical boundary established. ADR-0004 added. Migration 0001
+  amended (pre-production; cleanest schema). 51 tests (38 unit + 13 integration incl.
+  adversarial A–F); migration-from-zero re-proven (0→7 tables); build green. Skeptic
+  review extended with 6 new attacks (all held).
 - **2026-07-24 — Phase 1 complete/VERIFIED.** Monorepo skeleton (`packages/core`,
   `packages/data-contracts`, `packages/db`, `services/ingestion`, `apps/web`), pnpm
   workspace, strict TypeScript (`noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`),
