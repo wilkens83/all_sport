@@ -17,7 +17,9 @@ export interface IngestSummary {
   requestStatus: number;
 }
 
-async function getOrCreateProvider(db: Kysely<Database>): Promise<string> {
+export async function getOrCreateProvider(
+  db: Kysely<Database>,
+): Promise<string> {
   const inserted = await db
     .insertInto("providers")
     .values({
@@ -147,33 +149,25 @@ export async function ingestSchedule(
         ? Number(game.season)
         : (game.season ?? null);
 
+    const awayProb = game.teams.away.probablePitcher?.id ?? null;
+    const homeProb = game.teams.home.probablePitcher?.id ?? null;
+    const gameValues = {
+      season,
+      game_date: game.officialDate,
+      game_datetime: new Date(game.gameDate),
+      abstract_game_state: game.status.abstractGameState,
+      detailed_state: game.status.detailedState,
+      coded_game_state: game.status.codedGameState ?? null,
+      away_team_id: awayId,
+      home_team_id: homeId,
+      venue_id: venueId,
+      away_probable_pitcher_mlb_id: awayProb,
+      home_probable_pitcher_mlb_id: homeProb,
+    };
     const upserted = await db
       .insertInto("mlb_games")
-      .values({
-        mlb_game_pk: game.gamePk,
-        season,
-        game_date: game.officialDate,
-        game_datetime: new Date(game.gameDate),
-        abstract_game_state: game.status.abstractGameState,
-        detailed_state: game.status.detailedState,
-        coded_game_state: game.status.codedGameState ?? null,
-        away_team_id: awayId,
-        home_team_id: homeId,
-        venue_id: venueId,
-      })
-      .onConflict((oc) =>
-        oc.column("mlb_game_pk").doUpdateSet({
-          season,
-          game_date: game.officialDate,
-          game_datetime: new Date(game.gameDate),
-          abstract_game_state: game.status.abstractGameState,
-          detailed_state: game.status.detailedState,
-          coded_game_state: game.status.codedGameState ?? null,
-          away_team_id: awayId,
-          home_team_id: homeId,
-          venue_id: venueId,
-        }),
-      )
+      .values({ mlb_game_pk: game.gamePk, ...gameValues })
+      .onConflict((oc) => oc.column("mlb_game_pk").doUpdateSet(gameValues))
       .returning("id")
       .executeTakeFirstOrThrow();
     gamesUpserted += 1;

@@ -18,13 +18,17 @@
     "db:migrate": "pnpm --filter @all-sport/ingestion run migrate",
     "db:verify": "pnpm --filter @all-sport/ingestion run verify",
     "ingest:mlb": "pnpm --filter @all-sport/ingestion run ingest:mlb",
-    "dev": "pnpm --filter @all-sport/web run dev"
+    "ingest:mlb-rosters": "pnpm --filter @all-sport/ingestion run ingest:mlb-rosters",
+    "ingest:mlb-gamelogs": "pnpm --filter @all-sport/ingestion run ingest:mlb-gamelogs",
+    "dev": "pnpm --filter @all-sport/web run dev",
+    "test:e2e": "node scripts/e2e-mlb.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.7.0",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.7.0",
+    "playwright": "1.56.1",
     "prettier": "3.9.6",
     "tsx": "4.23.1",
     "typescript": "5.9.3",

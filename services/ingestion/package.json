@@ -8,7 +8,9 @@
     "build": "tsc --noEmit",
     "migrate": "tsx src/cli.ts migrate",
     "verify": "tsx src/cli.ts verify",
-    "ingest:mlb": "tsx src/cli.ts ingest:mlb"
+    "ingest:mlb": "tsx src/cli.ts ingest:mlb",
+    "ingest:mlb-rosters": "tsx src/cli.ts ingest:mlb-rosters",
+    "ingest:mlb-gamelogs": "tsx src/cli.ts ingest:mlb-gamelogs"
   },
   "dependencies": {
     "@all-sport/core": "workspace:*",

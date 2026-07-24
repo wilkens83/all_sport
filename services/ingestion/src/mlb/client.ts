@@ -15,7 +15,7 @@ export interface FetchScheduleResult {
 export async function fetchSchedule(
   date: string,
 ): Promise<FetchScheduleResult> {
-  const url = `${MLB_STATS_API_BASE}/v1/schedule?sportId=1&date=${date}&hydrate=team,venue`;
+  const url = `${MLB_STATS_API_BASE}/v1/schedule?sportId=1&date=${date}&hydrate=team,venue,probablePitcher`;
   const start = Date.now();
   const res = await fetch(url);
   const body = await res.text();

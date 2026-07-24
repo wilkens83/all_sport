@@ -123,6 +123,52 @@ export interface MlbGamesTable {
   away_team_id: string;
   home_team_id: string;
   venue_id: string | null;
+  away_probable_pitcher_mlb_id: number | null;
+  home_probable_pitcher_mlb_id: number | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface MlbPlayersTable {
+  id: Generated<string>;
+  mlb_player_id: number;
+  full_name: string;
+  first_name: string | null;
+  last_name: string | null;
+  primary_position: string | null;
+  position_type: string | null;
+  role: Generated<string>;
+  bats: string | null;
+  throws: string | null;
+  birth_date: string | null;
+  current_team_id: string | null;
+  active: boolean | null;
+  provider_updated_at: Date | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface MlbRosterMembershipsTable {
+  id: Generated<string>;
+  team_id: string;
+  player_id: string;
+  roster_type: string;
+  status_code: string | null;
+  status_description: string | null;
+  observed_date: string;
+  created_at: Generated<Date>;
+}
+
+export interface MlbPlayerGameLogsTable {
+  id: Generated<string>;
+  player_id: string;
+  stat_group: string;
+  game_date: string;
+  mlb_game_pk: number | null;
+  opponent_name: string | null;
+  is_home: boolean | null;
+  season: number | null;
+  stat: unknown;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
@@ -138,4 +184,7 @@ export interface Database {
   venues: VenuesTable;
   mlb_teams: MlbTeamsTable;
   mlb_games: MlbGamesTable;
+  mlb_players: MlbPlayersTable;
+  mlb_roster_memberships: MlbRosterMembershipsTable;
+  mlb_player_game_logs: MlbPlayerGameLogsTable;
 }
