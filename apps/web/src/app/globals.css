@@ -106,3 +106,147 @@ h1 {
 a {
   color: var(--ok);
 }
+
+/* ---- Diamond Edge nav + MLB slice ---- */
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: #0e1116;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+  text-decoration: none;
+}
+.brand .spark {
+  color: var(--brand, #e0803a);
+}
+.navlinks {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+.navlink {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+}
+.navlink.active {
+  color: var(--fg);
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.navlink.disabled {
+  color: var(--off);
+  cursor: not-allowed;
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.page-head h1 {
+  margin: 0;
+}
+.datastate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid;
+  border-radius: 999px;
+}
+.datastate-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.game-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.game-card {
+  display: grid;
+  grid-template-columns: 88px 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--fg);
+}
+.game-card:hover {
+  border-color: #3a4553;
+}
+.game-time {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+.game-match {
+  font-size: 1rem;
+}
+.game-match .at {
+  color: var(--muted);
+  margin: 0 0.4rem;
+}
+.game-abbr {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-left: 0.4rem;
+}
+.game-status {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: right;
+}
+.game-venue {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 0.15rem;
+}
+.empty {
+  padding: 2rem;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+.back {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.detail-grid {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 520px;
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0;
+}
+.detail-row .k {
+  color: var(--muted);
+}

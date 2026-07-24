@@ -17,6 +17,7 @@
     "build": "pnpm -r build",
     "db:migrate": "pnpm --filter @all-sport/ingestion run migrate",
     "db:verify": "pnpm --filter @all-sport/ingestion run verify",
+    "ingest:mlb": "pnpm --filter @all-sport/ingestion run ingest:mlb",
     "dev": "pnpm --filter @all-sport/web run dev"
   },
   "devDependencies": {

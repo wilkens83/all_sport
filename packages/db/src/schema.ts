@@ -92,6 +92,41 @@ export interface SchemaMigrationsTable {
   applied_at: Generated<Date>;
 }
 
+// ---- MLB canonical entities (migration 0002) ----
+
+export interface VenuesTable {
+  id: Generated<string>;
+  mlb_venue_id: number;
+  name: string;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface MlbTeamsTable {
+  id: Generated<string>;
+  mlb_team_id: number;
+  name: string;
+  abbreviation: string | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
+export interface MlbGamesTable {
+  id: Generated<string>;
+  mlb_game_pk: number;
+  season: number | null;
+  game_date: string; // date (YYYY-MM-DD)
+  game_datetime: Date | null;
+  abstract_game_state: string | null;
+  detailed_state: string | null;
+  coded_game_state: string | null;
+  away_team_id: string;
+  home_team_id: string;
+  venue_id: string | null;
+  created_at: Generated<Date>;
+  updated_at: Generated<Date>;
+}
+
 export interface Database {
   sports: SportsTable;
   providers: ProvidersTable;
@@ -100,4 +135,7 @@ export interface Database {
   data_quality_events: DataQualityEventsTable;
   provider_observations: ProviderObservationsTable;
   schema_migrations: SchemaMigrationsTable;
+  venues: VenuesTable;
+  mlb_teams: MlbTeamsTable;
+  mlb_games: MlbGamesTable;
 }
